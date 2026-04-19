@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DFA Minimizer (Input Based)</title>
+<style>
+body{
+  font-family: Arial;
+  background:#0b0c10;
+  color:white;
+  padding:20px;
+}
+input, textarea{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+}
+button{
+  padding:10px;
+  background:#00d4ff;
+  border:none;
+  cursor:pointer;
+}
+.result{
+  margin-top:20px;
+  padding:10px;
+  background:#1f2833;
+}
+</style>
+</head>
+<body>
 
+<h2>DFA Minimizer (Input Mode)</h2>
+
+<label>States (comma separated)</label>
+<input id="states" placeholder="q0,q1,q2">
+
+<label>Alphabet</label>
+<input id="alphabet" placeholder="a,b">
+
+<label>Start State</label>
+<input id="start">
+
+<label>Final States</label>
+<input id="final">
+
+<label>Transitions (format: q0,a=q1)</label>
+<textarea id="trans" rows="6"
+placeholder="q0,a=q1
+q0,b=q2
+q1,a=q0"></textarea>
+
+<button onclick="buildDFA()">Build DFA</button>
+<button onclick="minimize()">Minimize</button>
+
+<div class="result" id="output"></div>
+
+<script>
+let states=[], alphabet=[], startState="", finalStates=[];
+let transitions={};
+
+function buildDFA(){
+  states = document.getElementById("states").value.split(",");
+  alphabet = document.getElementById("alphabet").value.split(",");
+  startState = document.getElementById("start").value.trim();
+  finalStates = document.getElementById("final").value.split(",");
+
+  transitions={};
+
+  const lines = document.getElementById("trans").value.split("\n");
+  lines.forEach(line=>{
+    if(!line.includes("=")) return;
+    let [left,right] = line.split("=");
+    let [from,sym] = left.split(",");
+    transitions[`${from.trim()},${sym.trim()}`] = right.trim();
+  });
+
+  document.getElementById("output").innerHTML =
+    "<b>DFA Loaded Successfully</b><br>" +
+    "States: "+states.join(",")+"<br>" +
+    "Alphabet: "+alphabet.join(",")+"<br>";
+}
+
+function minimize(){
+  let table={};
+
+  // Step 1: mark accept vs non-accept
+  for(let i=0;i<states.length;i++){
+    for(let j=0;j<i;j++){
+      let a=states[i], b=states[j];
+      let key=`${a},${b}`;
+
+      if(finalStates.includes(a) != finalStates.includes(b)){
+        table[key]="X";
+      }else{
+        table[key]="";
+      }
+    }
+  }
+
+  let changed=true;
+
+  while(changed){
+    changed=false;
+
+    for(let key in table){
+      if(table[key]=="X") continue;
+
+      let [a,b]=key.split(",");
+
+      for(let sym of alphabet){
+        let da = transitions[`${a},${sym}`];
+        let db = transitions[`${b},${sym}`];
+
+        if(da && db){
+          let check = da>db?`${da},${db}`:`${db},${da}`;
+          if(table[check]=="X"){
+            table[key]="X";
+            changed=true;
+          }
+        }
+      }
+    }
+  }
+
+  // Equivalence classes
+  let classes=[];
+  let used=new Set();
+
+  states.forEach(s=>{
+    if(used.has(s)) return;
+    let group=[s];
+
+    states.forEach(t=>{
+      if(s!==t){
+        let key = s>t?`${s},${t}`:`${t},${s}`;
+        if(table[key]!="X"){
+          group.push(t);
+          used.add(t);
+        }
+      }
+    });
+
+    classes.push(group);
+    used.add(s);
+  });
+
+  document.getElementById("output").innerHTML +=
+    "<br><b>Equivalence Classes:</b><br>" +
+    classes.map(c=>"{"+c.join(",")+"}").join("<br>");
+}
+</script>
+
+</body>
+</html>
