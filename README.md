@@ -8,7 +8,13 @@ Built as part of a **Theory of Computation (TOC)** assignment.
 
 ## Live Demo
 
-> `https://your-project-name.vercel.app`
+👉 [https://dfa-minimizer-git-main-rithwikjoshis-projects.vercel.app/](https://dfa-minimizer-git-main-rithwikjoshis-projects.vercel.app/)
+
+---
+
+## Repository
+
+👉 [https://github.com/rithwikjoshi/dfa-minimizor](https://github.com/rithwikjoshi/dfa-minimizor)
 
 ---
 
@@ -43,8 +49,8 @@ Implements the **Myhill–Nerode Theorem** via Table-Filling:
 No build tools or dependencies required.
 
 ```bash
-git clone https://github.com/your-username/dfa-minimizer.git
-cd dfa-minimizer
+git clone https://github.com/rithwikjoshi/dfa-minimizor.git
+cd dfa-minimizor
 open index.html
 ```
 
@@ -52,19 +58,10 @@ Or just double-click `index.html` — it runs entirely in the browser.
 
 ---
 
-## Deployment (Vercel)
-
-1. Push to GitHub
-2. Go to [vercel.com](https://vercel.com) → **New Project** → Import repo
-3. Settings: Framework = **Other**, Build Command = *(blank)*, Output = `./`
-4. Click **Deploy**
-
----
-
 ## Project Structure
 
 ```
-dfa-minimizer/
+dfa-minimizor/
 ├── index.html   # Full application (HTML + CSS + JS in one file)
 └── README.md
 ```
